@@ -6,9 +6,10 @@ This demo uses `@azure/msal-react` with a popup sign-in flow and the `User.Read`
 
 1. Register a single-page application in the [Microsoft Entra admin center](https://entra.microsoft.com/).
 2. Add `http://localhost:5173` as a redirect URI under **Authentication**.
-3. Copy `.env.example` to `.env` and replace `VITE_CLIENT_ID` with the app registration's client ID.
-4. Set `VITE_TENANT_ID` to your directory tenant ID, or keep `common` for work, school, and personal accounts.
-5. Restart Vite with `npm run dev` after changing `.env`.
+3. Copy `.env.example` to `.env` and replace the React and Spring API registration values.
+4. In the Spring API app registration, expose the `access_as_user` scope and grant the React app permission to it.
+5. Set `VITE_API_BASE_URL` to the Spring Boot URL and `VITE_API_SCOPE` to the exposed API scope.
+6. Restart Vite with `npm run dev` after changing `.env`.
 
 Never commit `.env`; it is ignored by Vite projects and should contain only local configuration.
 

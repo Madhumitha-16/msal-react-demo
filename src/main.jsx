@@ -10,8 +10,8 @@ const tenantId = import.meta.env.VITE_TENANT_ID || 'common'
 const msalInstance = new PublicClientApplication({
   auth: {
     clientId: clientId || '00000000-0000-0000-0000-000000000000',
-    authority: `https://login.microsoftonline.com/${tenantId}`,
-    redirectUri: window.location.origin,
+    authority: import.meta.env.VITE_AUTHORITY || `https://login.microsoftonline.com/${tenantId}`,
+    redirectUri: import.meta.env.VITE_REDIRECT_URI || window.location.origin,
   },
   cache: { cacheLocation: 'sessionStorage' },
 })
