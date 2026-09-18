@@ -1,6 +1,6 @@
 # MSAL React Demo
 
-This demo uses `@azure/msal-react` with a popup sign-in flow and the `User.Read` scope.
+This demo uses `@azure/msal-react` with a popup sign-in flow. The React app exchanges the Microsoft Entra access token with the Spring API, then uses the returned server JWT for API calls.
 
 ## Configure authentication
 
@@ -8,8 +8,9 @@ This demo uses `@azure/msal-react` with a popup sign-in flow and the `User.Read`
 2. Add `http://localhost:5173` as a redirect URI under **Authentication**.
 3. Copy `.env.example` to `.env` and replace the React and Spring API registration values.
 4. In the Spring API app registration, expose the `access_as_user` scope and grant the React app permission to it.
-5. Set `VITE_API_BASE_URL` to the Spring Boot URL and `VITE_API_SCOPE` to the exposed API scope.
-6. Restart Vite with `npm run dev` after changing `.env`.
+5. Set `VITE_BFF_BASE_URL` to the Spring Boot URL and `VITE_API_SCOPE` to the exposed API scope.
+6. Start the Spring API from `spring-api` with `mvn spring-boot:run`.
+7. Restart Vite with `npm run dev` after changing `.env`.
 
 Never commit `.env`; it is ignored by Vite projects and should contain only local configuration.
 
@@ -19,6 +20,12 @@ Never commit `.env`; it is ignored by Vite projects and should contain only loca
 npm install
 npm run dev
 ```
+
+## Spring API session flow
+
+`POST /api/auth/exchange` validates the incoming Entra token using the configured issuer, audience, signature, and expiry. The API stores the original token in a server-side session store and returns a short-lived, HMAC-signed server JWT.
+
+Protected requests use that server JWT. A security filter checks its `jti` against the server-side store and also checks both the Entra token expiry and server JWT expiry. The demo store is in memory; use Redis or another shared store for production or multiple backend instances. Set a unique `SERVER_JWT_SECRET_BASE64` outside local development.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

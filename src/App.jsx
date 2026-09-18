@@ -58,7 +58,7 @@ function App() {
           headers: { Authorization: `Bearer ${tokenResponse.accessToken}` },
         })
 
-        console.log('token response:', tokenResponse.accessToken)
+        console.log('token response:', response, tokenResponse.accessToken)
         const responseText = await response.text()
         let responseBody
         try {
@@ -78,7 +78,13 @@ function App() {
       }
     }
 
-    return <HomePage account={account} onLogout={() => instance.logout({ account })} onCallApi={handleCallApi} apiResponse={apiResponse} apiError={apiError} isApiLoading={isApiLoading} />
+    const handleLogout = async () => {
+      sessionStorage.removeItem('msal.server.accessToken')
+      await instance.clearCache({ account })
+      window.location.replace(window.location.origin)
+    }
+
+    return <HomePage account={account} onLogout={handleLogout} onCallApi={handleCallApi} apiResponse={apiResponse} apiError={apiError} isApiLoading={isApiLoading} />
   }
 
   const handleLogin = async () => {
