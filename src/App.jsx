@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { UnauthenticatedTemplate, useIsAuthenticated, useMsal } from '@azure/msal-react'
+import { AuthenticatedTemplate, UnauthenticatedTemplate, useIsAuthenticated, useMsal } from '@azure/msal-react'
 import './App.css'
 
 const apiScope = import.meta.env.VITE_API_SCOPE

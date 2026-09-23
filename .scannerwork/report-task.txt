@@ -2,5 +2,5 @@ projectKey=msal-react-demo
 serverUrl=http://localhost:9000
 serverVersion=26.9.0.129388
 dashboardUrl=http://localhost:9000/dashboard?id=msal-react-demo
-ceTaskId=ef60f68f-e666-4868-86ad-8127fc07a8a4
-ceTaskUrl=http://localhost:9000/api/ce/task?id=ef60f68f-e666-4868-86ad-8127fc07a8a4
+ceTaskId=965ab1c1-0a80-449b-85cd-8859d3be1bde
+ceTaskUrl=http://localhost:9000/api/ce/task?id=965ab1c1-0a80-449b-85cd-8859d3be1bde

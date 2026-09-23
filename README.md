@@ -21,6 +21,47 @@ npm install
 npm run dev
 ```
 
+## ESLint
+
+ESLint is configured in `eslint.config.js` with the recommended JavaScript,
+React Hooks, and React Refresh rules.
+
+Run the linter:
+
+```bash
+npm run lint
+```
+
+Automatically fix supported issues:
+
+```bash
+npm run lint:fix
+```
+
+Run `npm run lint` before committing changes. Fix remaining reported issues
+manually when ESLint cannot safely change them.
+
+## Pre-commit validation
+
+Husky installs a Git pre-commit hook when dependencies are installed. The hook
+runs ESLint first and then runs SonarQube with the quality gate enabled. A
+commit is blocked if either command fails.
+
+After cloning the repository, run:
+
+```powershell
+npm install
+$env:SONAR_TOKEN = "your-sonarqube-project-token"
+```
+
+The SonarQube server must be running at `http://localhost:9000`. To run the
+same checks manually:
+
+```powershell
+npm run lint
+npm run sonar
+```
+
 ## SonarQube analysis
 
 Create a project in the SonarQube instance at `http://localhost:9000` with the
