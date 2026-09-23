@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { AuthenticatedTemplate, UnauthenticatedTemplate, useIsAuthenticated, useMsal } from '@azure/msal-react'
+import { UnauthenticatedTemplate, useIsAuthenticated, useMsal } from '@azure/msal-react'
 import './App.css'
 
 const apiScope = import.meta.env.VITE_API_SCOPE
@@ -64,9 +64,11 @@ function App() {
         const backendMessage = typeof apiRequestError?.response?.data === 'string'
           ? apiRequestError.response.data
           : apiRequestError?.response?.data?.message
-        const errorMessage = apiRequestError?.response
-          ? `Spring API returned HTTP ${apiRequestError.response.status}${backendMessage ? `: ${backendMessage}` : '.'}`
-          : apiRequestError.message || 'The Spring API request failed.'
+        const backendSuffix = backendMessage ? `: ${backendMessage}` : '.'
+        let errorMessage = apiRequestError.message || 'The Spring API request failed.'
+        if (apiRequestError?.response) {
+          errorMessage = `Spring API returned HTTP ${apiRequestError.response.status}${backendSuffix}`
+        }
 
         setApiError(errorMessage)
       } finally {
@@ -86,7 +88,7 @@ function App() {
     setError('')
     setIsLoading(true)
     try {
-      const response = await instance.loginPopup(loginRequest);
+      await instance.loginPopup(loginRequest);
     } catch (loginError) {
       setError(loginError.message || 'Sign-in could not be completed.')
     } finally {
@@ -101,7 +103,7 @@ function App() {
         <div className="eyebrow">Microsoft identity platform</div>
         <h1>Sign in once.<br /></h1>
         <p className="hero-copy">A small, practical playground for testing MSAL authentication flows in a React app.</p>
-        {!isConfigured && <div className="notice" role="status"><strong>Configuration needed</strong><span>Add <code>VITE_CLIENT_ID</code> to your <code>.env</code> file, then restart Vite.</span></div>}
+        {!isConfigured && <div className="notice"><strong>Configuration needed</strong><span>Add <code>VITE_CLIENT_ID</code> to your <code>.env</code> file, then restart Vite.</span></div>}
         <div className="auth-area">
           
           <UnauthenticatedTemplate>
@@ -110,15 +112,6 @@ function App() {
             <button type="button" className="primary-button" onClick={handleLogin} disabled={!isConfigured || isLoading}>{isLoading ? 'Opening sign-in...' : 'Sign in'} 
             <span aria-hidden="true">&rarr;</span></button></div>
           </UnauthenticatedTemplate>
-          
-          {/* <AuthenticatedTemplate>
-            <div className="profile-card"><div className="profile-heading"><div className="avatar">
-            {(account?.name || account?.username || '?').charAt(0).toUpperCase()}
-            </div><div><span className="label">Authenticated account</span>
-            <h2>{account?.name || 'Microsoft user'}</h2><p>{account?.username}</p></div></div>
-            <div className="account-details"><span>Authority</span><strong>{import.meta.env.VITE_TENANT_ID ? 'Configured tenant' : 'Common tenant'}</strong></div>
-            <button type="button" className="secondary-button" onClick={() => instance.logoutRedirect({ account })}>Sign out</button></div>
-          </AuthenticatedTemplate> */}
 
         </div>
         {error && <p className="error" role="alert">{error}</p>}
