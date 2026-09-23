@@ -7,11 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sonar": "sonar-scanner"
   },
   "dependencies": {
     "@azure/msal-browser": "^4.27.0",
     "@azure/msal-react": "^3.0.22",
+    "axios": "^1.20.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
@@ -24,6 +26,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.4",
     "globals": "^17.11.0",
+    "sonar-scanner": "^3.1.0",
     "vite": "^8.2.2"
   }
 }

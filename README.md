@@ -21,6 +21,24 @@ npm install
 npm run dev
 ```
 
+## SonarQube analysis
+
+Create a project in the SonarQube instance at `http://localhost:9000` with the
+key `msal-react-demo`. Generate a project analysis token from **My Account >
+Security**, then set it in the shell before running the scan.
+
+PowerShell:
+
+```powershell
+$env:SONAR_TOKEN = "your-project-token"
+npm install --save-dev sonar-scanner
+npm run sonar
+```
+
+The scanner reads `sonar-project.properties`, sends the analysis to
+`http://localhost:9000`, and analyzes the `src` directory. Do not commit the
+token or place it in `.env` files.
+
 ## Spring API session flow
 
 `POST /api/auth/exchange` validates the incoming Entra token using the configured issuer, audience, signature, and expiry. The API stores the original token in a server-side session store and returns a short-lived, HMAC-signed server JWT.

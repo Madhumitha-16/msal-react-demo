@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import axios from 'axios'
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useIsAuthenticated, useMsal } from '@azure/msal-react'
 import './App.css'
 
@@ -54,25 +55,20 @@ function App() {
           tokenResponse = await instance.acquireTokenPopup({ scopes: [apiScope], account })
         }
 
-        const response = await fetch(`${apiBaseUrl}/api/me`, {
+        const response = await axios.get(`${apiBaseUrl}/api/me`, {
           headers: { Authorization: `Bearer ${tokenResponse.accessToken}` },
         })
-
-        console.log('token response:', response, tokenResponse.accessToken)
-        const responseText = await response.text()
-        let responseBody
-        try {
-          responseBody = responseText ? JSON.parse(responseText) : null
-        } catch {
-          responseBody = responseText
-        }
-        if (!response.ok) {
-          const backendMessage = typeof responseBody === 'string' ? responseBody : responseBody?.message
-          throw new Error(`Spring API returned HTTP ${response.status}${backendMessage ? `: ${backendMessage}` : '.'}`)
-        }
-        setApiResponse(responseBody)
+        console.log('Spring API response:', tokenResponse.accessToken)
+        setApiResponse(response.data)
       } catch (apiRequestError) {
-        setApiError(apiRequestError.message || 'The Spring API request failed.')
+        const backendMessage = typeof apiRequestError?.response?.data === 'string'
+          ? apiRequestError.response.data
+          : apiRequestError?.response?.data?.message
+        const errorMessage = apiRequestError?.response
+          ? `Spring API returned HTTP ${apiRequestError.response.status}${backendMessage ? `: ${backendMessage}` : '.'}`
+          : apiRequestError.message || 'The Spring API request failed.'
+
+        setApiError(errorMessage)
       } finally {
         setIsApiLoading(false)
       }
@@ -80,8 +76,7 @@ function App() {
 
     const handleLogout = async () => {
       sessionStorage.removeItem('msal.server.accessToken')
-      await instance.clearCache({ account })
-      window.location.replace(window.location.origin)
+      await instance.logoutPopup({ account });
     }
 
     return <HomePage account={account} onLogout={handleLogout} onCallApi={handleCallApi} apiResponse={apiResponse} apiError={apiError} isApiLoading={isApiLoading} />
@@ -92,7 +87,6 @@ function App() {
     setIsLoading(true)
     try {
       const response = await instance.loginPopup(loginRequest);
-      console.log("Login response:", response);
     } catch (loginError) {
       setError(loginError.message || 'Sign-in could not be completed.')
     } finally {
